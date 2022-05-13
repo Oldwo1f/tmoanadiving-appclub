@@ -249,12 +249,13 @@ watchEffect(() => {console.log('watchEffect+++!'); jeu.value= state.jeux.current
 	
 
 const genderOptions = ref([
-	{value:"male",text:'Homme'},
+	{value:"male",text:'Homme'}, 
 	{value:"female",text:'Femme'},
 	{value:"other",text:'Autre'}
 ])
 let validationProgress = ref(false)
 
+//tt
 // const onSubmit = function(){
 
 // 	console.log('ONSUBMIT');
