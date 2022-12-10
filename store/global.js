@@ -1,7 +1,7 @@
 
 
 export const state = () => ({
-	menuCollapsed: true,
+	menuCollapsed: false,
 	alertText: 'Test Alert',
 	alertVariant: 'info',
 	alertCountDown: '0',
@@ -18,6 +18,11 @@ export const mutations = {
 	toogleMenuCollapsed(state) {
 		console.log('STORE Mutation');
 		state.menuCollapsed = !state.menuCollapsed;
+		console.log('state.menuCollapsed ', state.menuCollapsed);
+	},
+	closeMenuCollapsed(state) {
+		console.log('STORE Mutation');
+		state.menuCollapsed = false;
 		console.log('state.menuCollapsed ', state.menuCollapsed);
 	},
 	setAlertText(state, payload) {
@@ -40,6 +45,11 @@ export const actions = {
 
 		console.log('STORE ACTION');
 		state.commit('toogleMenuCollapsed')
+	},
+	closeMenuCollapsed(state) {
+
+		console.log('STORE ACTION');
+		state.commit('closeMenuCollapsed')
 	},
 	alert(state, payload) {
 

@@ -21,7 +21,8 @@ Vue.component('ValidationObserver', ValidationObserver)
 
 extend('required', {
 	...required,
-	message: 'Ce champs est requis'
+	message: 'Ce champs est requis',
+	invalidateFalse: true
 })
 extend('oneOf', {
 	...oneOf,

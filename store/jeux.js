@@ -14,6 +14,7 @@ export const state = () => ({
 	rows: 1,
 	isBusy: false,
 	currentJeu: {},
+	currentGagnantList: [],
 })
 
 export const getters = {
@@ -67,6 +68,10 @@ export const mutations = {
 		console.log('setCurentJeu====>', payload);
 		state.currentJeu = payload;
 	},
+	setCurentGagantList(state, payload) {
+		console.log('setCurentGagantList====>', payload);
+		state.currentGagnantList = payload;
+	},
 	setCurentJeuImages(state, payload) {
 		console.log('setCurentJeuImages', payload);
 		state.currentJeu.images = payload;
@@ -105,6 +110,13 @@ export const actions = {
 
 		console.log('STORE ACTION setCurentJeu', jeu);
 		state.commit('setCurentJeu', jeu.data)
+	},
+	async fetchJeuxGagnant(state) {
+		// console.log('mypayload', payload);
+		const jeux = await axios.get(process.env.API_URL + 'jeu/fetchJeuxGagnant')
+
+		console.log('STORE ACTION setCurentGagantList', jeux);
+		state.commit('setCurentGagantList', jeux.data)
 	},
 
 }

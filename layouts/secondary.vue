@@ -1,12 +1,15 @@
 <template>
-	<div class="WRAPPER">
-				<nuxt />
-		
-		
-	</div>
+<div class="WRAPPER">
+    <div id="content">
+        <Nuxt v-if="!$slots.default" />
+        <Slot />
+    </div>
+</div>
 </template>
 
 <script setup>
+
+
 const { $store } = useNuxtApp()
 const state = ref($store.state)
 // console.log('$store.state.menuCollapsed init=',$store.state.menuCollapsed);
@@ -17,47 +20,80 @@ const state = ref($store.state)
 
 </script>
 
-<style  lang="less">
-	@import '~static/less/variable.less';
-	body{
+<style scoped lang="less">
+    @import '~static/less/variable.less';
+
+
+    #content{
+        background: white;
+        position: relative;
+        width:100%;
+        height:100vh;
+        padding:40px 0px 100px 0px;
+        transition: all 0.1s ease-out 0s;
+        // transition: width 0.2s ease-in 0s;
+        overflow-y:auto;
+        
+    }
+
+
+
+    body{
 		background: #eee;
     position: absolute;
-    bottom: 0;
     top: 0;
     left: 0;
     right: 0;
 
 	#__nuxt{
-		height:100%
+		height:100%;
+        min-height:100vh;
 	}#__layout{
-		height:100%
+		height:100%;
+        min-height:100vh;
 	}
 	}
 	.WRAPPER{
-		position: relative;
-		left:50%;
-		transform: translateX(-50%);
-		max-width:500px;
-		height:100%;
-		background:white;
-		text-align: center;
+		position: fixed;
+        top: 0;bottom: 0;
+        left: 0;
+        right: 0;
+        font-size : 12px;
 	}
-	// .plainBG{
-	// 	background: url("./assets/images/bg1.jpg") no-repeat center center;
-    //     background-size: cover;
-	// 	width:100vw;
-	// 	height: 100vh;
-	// 	position: relative;
-	// 	display: flex;
-	// 	align-items: center;
-	// 	justify-content: center;
-	// }
+    
+    @media screen and (min-width:800px) {
 
-	// .leftBigBar{
-		
-	// 	// height: 400px;
-	// 	width:400px;
-	// 	background: rgba(255,255,255,0.5);
-	// 	border-radius:5px;
-	// }
+        .WRAPPER{
+            background: red;
+            position: fixed;
+            top: auto;bottom: auto;
+            left: 50%;
+            margin-left: -300px;
+            right: auto;
+            width : 600px;
+            max-height : 100vh;
+            border-left:2px solid @blue;
+            border-right:2px solid @blue;
+            margin-top: 0px;
+            overflow-y: auto;
+
+            header {
+                position: absolute;
+            }
+        
+        }
+        #content{
+        background: white;
+        position: relative;
+        width:100%;
+        height:100vh;
+        padding:0px 0px 0px 0px ; 
+        transition: all 0.1s ease-out 0s;
+        // transition: width 0.2s ease-in 0s;
+        overflow-y:auto;
+        
+        } 
+
+    }
+    
 </style>

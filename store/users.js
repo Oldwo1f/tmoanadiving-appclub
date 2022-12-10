@@ -1,4 +1,5 @@
 const axios = require('axios').default;
+// const env = require('dotenv');
 
 export const state = () => ({
 	users: [],
@@ -14,6 +15,8 @@ export const state = () => ({
 	rows: 1,
 	isBusy: false,
 	currentUser: {},
+	userFounded: {},
+	userError: null,
 })
 
 export const getters = {
@@ -67,9 +70,17 @@ export const mutations = {
 		console.log('setCurentUser', payload);
 		state.currentUser = payload;
 	},
+	setUserFounded(state, payload) {
+		console.log('setUserFounded', payload);
+		state.userFounded = payload;
+	},
 	setIsBusy(state, payload) {
 		console.log('setIsBusy', payload);
 		state.isBusy = payload;
+	},
+	setUserError(state, payload) {
+		console.log('setUserError', payload);
+		state.userError = payload;
 	},
 
 }
@@ -85,7 +96,7 @@ export const actions = {
 		state.commit('setIsBusy', true)
 		console.log('payload', payload);
 		// setTimeout(async function () {
-		const users = await axios.get('http://localhost:1337/api/v1/users?archive=' + payload.archive)
+		const users = await axios.get(process.env.API_URL + 'users?archive=' + payload.archive)
 
 		console.log('STORE ACTION');
 		state.commit('setUsers', users.data)
@@ -97,28 +108,48 @@ export const actions = {
 	},
 	async fetchUser(state, payload) {
 		console.log('mypayload', payload);
-		const user = await axios.get('http://localhost:1337/api/v1/user/' + payload.id)
+		const user = await axios.get(process.env.API_URL + 'user/' + payload.id)
 
+		console.log('DATA', user);
 		console.log('STORE ACTION setCurentUser');
 		state.commit('setCurentUser', user.data)
+	},
+	async fetchUserByIdClient(state, payload) {
+		console.log('mypayload fetchUserByIdClient', payload);
+		const user = await axios.get(process.env.API_URL + 'user/findbyidclient/' + payload)
+
+		console.log('STORE ACTION setUserFounded');
+		if (user.data == 'invalid') {
+			state.commit('setUserError', 'error')
+			state.dispatch('global/alert', {
+				text: 'CODE INVALIDE. Veuillez saisir un code client valide',
+				variant: 'danger',
+				countDown: 5
+			}, { root: true })
+
+		} else {
+
+			state.commit('setUserFounded', user.data)
+		}
+
 	},
 	async updateCurrentUser(state, payload) {
 		console.log('mypayload', payload);
 		console.log(state);
 		// console.log(state.state.currentUser);
-		const user = { ...state.state.currentUser };
-		user[payload.key] = payload.val
-		console.log('user', user);
-		const edit = await axios.patch('http://localhost:1337/api/v1/user/' + user.id, { datas: user }).then(function (rep) {
+		// const user = { ...state.state.currentUser };
+		// user[payload.key] = payload.val
+		console.log('user', payload);
+		const edit = await axios.patch(process.env.API_URL + 'user/' + payload.id, { datas: payload }).then(function (rep) {
 			console.log('rep axios', rep);
 			if (rep.status === 200) {
 
-				const users = [...state.state.users];
-				console.log('users', users);
-				var index = _.findIndex(users, { id: rep.data.id });
-				console.log('index=', index);
-				users.splice(index, 1, rep.data);
-				state.commit('setUsers', users)
+				// const users = [...state.state.users];
+				// console.log('users', users);
+				// var index = _.findIndex(users, { id: rep.data.id });
+				// console.log('index=', index);
+				// users.splice(index, 1, rep.data);
+				// state.commit('setUsers', users)
 				state.commit('setCurentUser', rep.data)
 
 				state.dispatch('global/alert', {
@@ -136,7 +167,7 @@ export const actions = {
 		// const user = { ...state.state.currentUser };
 		// user[payload.key] = payload.val
 		// console.log('user', user);
-		const deleted = await axios.delete('http://localhost:1337/api/v1/user/' + payload.id).then(function (rep) {
+		const deleted = await axios.delete(process.env.API_URL + 'user/' + payload.id).then(function (rep) {
 			console.log('rep axios', rep);
 			if (rep.status === 200) {
 
@@ -183,7 +214,7 @@ export const actions = {
 				break;
 		}
 
-		const edit = await axios.patch('http://localhost:1337/api/v1/user/' + payload.id, { datas: { status: valueToupdate } }).then(function (rep) {
+		const edit = await axios.patch(process.env.API_URL + 'user/' + payload.id, { datas: { status: valueToupdate } }).then(function (rep) {
 			console.log('rep axios', rep);
 			if (rep.status === 200) {
 
@@ -205,7 +236,7 @@ export const actions = {
 	},
 	async resetPassword(state, payload) {
 		console.log('mypayload resetPassword', payload);
-		const edit = await axios.patch('http://localhost:1337/api/v1/user/resetPassword/' + payload.id, {}).then(function (rep) {
+		const edit = await axios.patch(process.env.API_URL + 'user/resetPassword/' + payload.id, {}).then(function (rep) {
 			console.log('rep axios', rep);
 			if (rep.status === 200) {
 
@@ -229,7 +260,7 @@ export const actions = {
 
 		// return { toto: 'toto' }
 		console.log('mypayload createUser', payload);
-		return await axios.post('http://localhost:1337/api/v1/user', payload.value).then(function (rep) {
+		return await axios.post(process.env.API_URL + 'user', payload.formdata).then(function (rep) {
 			console.log('rep axios', rep);
 			if (rep.status === 200) {
 
@@ -250,7 +281,7 @@ export const actions = {
 
 				console.log(' rep.data.id', rep.data.id);
 
-				return { id: rep.data.id };
+				return { success: true, id: rep.data.id };
 			}
 
 		}).catch(
@@ -266,6 +297,17 @@ export const actions = {
 						countDown: 5
 					}, { root: true })
 					return { err: 'Adresse email déjà utilisée' };
+
+				}
+				if (err.response.status === 400) {
+
+					console.log('heyho');
+					state.dispatch('global/alert', {
+						text: 'Une erreur s\'est produite, vérifier votre saisie',
+						variant: 'danger',
+						countDown: 5
+					}, { root: true })
+					return { err: 'Une erreur s\'est produite, vérifier votre saisie' };
 
 				}
 			}

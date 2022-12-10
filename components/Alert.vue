@@ -57,6 +57,7 @@ const countDownChanged = (dismissCountDown) =>{
 
 .customAlert{
 	margin-bottom:0px;
+	margin-top:10px;
 
 }
 

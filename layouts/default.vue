@@ -1,22 +1,12 @@
 <template>
 <div class="WRAPPER">
- 
- <!-- <div class="logoplaystar">PLAYSTAR</div> -->
- <div class="headerplaystar">
-     <img src="/playstar.png" alt="">
- </div>
-
-    <div id="content" >
-            <div class="contentPadding">
-            <!-- <transition name="page"> -->
-                <Nuxt v-if="!$slots.default" />
-                <Slot />
-            <!-- </transition> -->
-            </div>
+    <Header />
+    <!-- <Menu /> -->
+    <div id="content">
+        <Nuxt v-if="!$slots.default" />
+        <Slot />
     </div>
-    <div class="footerglobal">
-
-    </div>
+    <BottomMenu />
 </div>
 </template>
 
@@ -36,54 +26,19 @@ const state = ref($store.state)
 <style scoped lang="less">
     @import '~static/less/variable.less';
 
-    .fade-enter-active, .fade-leave-active{
-	transition: all 3sec
-}
-.fade-enter, .fade-leave-active{
-	opacity:0;
-	/* transform:scale(50%) */
-}
 
-
-.layout-enter-active, .layout-leave-active{
-	transition: all 3sec
-}
-.layout-enter, .layout-leave-active{
-	opacity:0;
-	transform:scale(50%)
-}
-   .logoplaystar{
-       background:olive;
-       text-align: center;
-       height : 70px;
-       width: 100%;
-       display: flex;
-       align-items: center;
-       justify-content: center;
-       font-size: 30px;
-       color:white;
-   }
     #content{
+        background: white;
         position: relative;
         width:100%;
-        padding:0px 0px 0px 0px;
+        height:100vh;
+        padding:40px 0px 100px 0px;
         transition: all 0.1s ease-out 0s;
         // transition: width 0.2s ease-in 0s;
+        overflow-y:auto;
         
-        .contentPadding{
-            padding:20px;width:100%;height:100%;
-        }
     }
 
-    .headerplaystar{
-        width:100%;
-        // background:olive;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        img{width:200px;margin: 10px 0px;}
-    }
 
 
     body{
@@ -94,18 +49,45 @@ const state = ref($store.state)
     right: 0;
 
 	#__nuxt{
-		height:100%
+		height:100%;
+        min-height:100vh;
 	}#__layout{
-		height:100%
+		height:100%;
+        min-height:100vh;
 	}
 	}
 	.WRAPPER{
-		position: relative;
-		left:50%;
-		transform: translateX(-50%);
-		max-width:500px;
-		height:100%;
-		background:white;
-		text-align: center;
+		position: fixed;
+        top: 0;bottom: 0;
+        left: 0;
+        right: 0;
+        font-size : 12px;
 	}
+    
+    @media screen and (min-width:800px) {
+
+        .WRAPPER{
+            background: red;
+            position: fixed;
+            top: auto;bottom: auto;
+            left: 50%;
+            margin-left: -300px;
+            right: auto;
+            width : 600px;
+            max-height : 100vh;
+            border-left:2px solid @blue;
+            border-right:2px solid @blue;
+            margin-top: 0px;
+            overflow-y: auto;
+
+            header {
+                position: absolute;
+            }
+            .bottomMenu {
+                position: absolute;
+            }
+        } 
+      
+        
+    }
 </style>
